@@ -1,34 +1,35 @@
 import Component from '@glimmer/component';
+import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
+import { restartableTask } from 'ember-concurrency';
 
 export default class MyRepository extends Component {
-  @tracked showDetailVisible = false;
-  @tracked branches = '';
+  @service apiClient;
 
-  @action
-  async showDetail(name, organizationName, token) {
-    let requestOptions = {
-      method: 'GET',
-      headers: {
-        Accept: 'application/vnd.github.v3+json',
-        Authorization: 'token ' + token,
-      },
-    };
-    let response = await fetch(
-      'https://api.github.com/repos/' +
-        organizationName +
-        '/' +
-        name +
-        '/branches',
-      requestOptions
-    );
-    let data = await response.json();
+  @tracked showDetailVisible = false;
+
+  get url() {
+    return this.args.repository.html_url;
+  }
+
+  get branches() {
+    return this.showDetail.last?.value ?? [];
+  }
+
+  @restartableTask
+  *showDetail() {
+    let { organizationName, repository } = this.args;
+    let { name } = repository;
+
+    let [data, response] = yield this.apiClient.get(`/repos/${organizationName}/${name}/branches`);
+
     if (!response.ok) {
       this.requestError = 'Some of the properties are wrong.';
-    } else {
-      this.branches = data;
-      this.showDetailVisible = !this.showDetailVisible;
+      return;
     }
+
+    this.showDetailVisible = true;
+
+    return data;
   }
 }

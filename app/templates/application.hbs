@@ -6,53 +6,43 @@
       <br>
       <Input @id="organization-name-input" @type="text" @value={{this.organizationName}}
         placeholder="Organization name" />
-      <br>
-      {{#if this.requestError}}
-        <br>
-        {{this.requestError}}
-        <br>
-      {{/if}}
-
-      <br>
-      <button type="button" id="submit-login" {{on "click" (perform this.submitToken)}}>Submit</button>
     </div>
   </div>
   <div id="right-side">
-    {{#if this.submitToken.last.isSuccessful}}
-      <div class="filters">
-        <label>
-          Is Private
-          <Input @type="checkbox" @checked={{this.isPrivate}} {{on "input" this.isPrivateCheck}} />
-        </label>
 
+    <DataProvider @token={{this.token}} @orgName={{this.organizationName}}>
+      <:error as |message|>
+        {{message}}
 
-        <label>
-          Language
-          <select class="language-dropdown" onchange={{action "languageFilterCheck" value='target.value' }}>
-            {{#each this.languages as |language|}}
-              <option value={{language}}>{{language}}</option>
-            {{/each}}
-          </select>
-        </label>
-      </div>
-      <table>
-        <tr>
-          <th>Repository name</th>
-          <th>Url</th>
-          <th>Language</th>
-          <th>Private</th>
-          <th>Open issues</th>
-          <th>Branch count</th>
-        </tr>
-        {{#each this.filteredRepositories as |repository|}}
-        <MyRepository @name={{repository.name}} @url={{repository.html_url}} @language={{repository.language}}
-          @isPrivate={{repository.private}} @openIssues={{repository.open_issues}}
-          @branchCount={{repository.branch_count}} @organizationName={{this.organizationName}} @token={{this.token}} />
-        {{/each}}
-      </table>
-    {{else}}
     <p class="no-data"> There are no data, please submit token and organization name! </p>
-    {{/if}}
+      </:error>
+
+      <:loading>
+        Loadin'
+      </:loading>
+
+      <:success as |repos|>
+        <Filters @repos={{repos}} as |filtered|>
+          <table>
+            <tr>
+              <th>Repository name</th>
+              <th>Url</th>
+              <th>Language</th>
+              <th>Private</th>
+              <th>Open issues</th>
+              <th>Branch count</th>
+            </tr>
+
+            {{#each filtered as |repository|}}
+              <MyRepository
+                @repository={{repository}}
+                @organizationName={{this.organizationName}}
+              />
+            {{/each}}
+          </table>
+        </Filters>
+      </:success>
+    </DataProvider>
+
   </div>
 </div>
-{{this.triggerJquery}}

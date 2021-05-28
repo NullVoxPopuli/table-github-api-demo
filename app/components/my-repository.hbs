@@ -1,20 +1,25 @@
 <tr>
-	<td>{{@name}}</td>
-	<td><a href={{@url}}>{{@url}}</a></td>
-	<td>{{@language}}</td>
-	<td>{{@isPrivate}}</td>
-	<td>{{@openIssues}}</td>
-	<td>{{@branchCount}}</td>
-	<td><a class="showmore" onclick={{action "showDetail" @name @organizationName @token}}>Show Branches</a></td>
+	<td>{{@repository.name}}</td>
+	<td><a href={{this.url}}>{{this.url}}</a></td>
+	<td>{{@repository.language}}</td>
+	<td>{{@repository.private}}</td>
+	<td>{{@repository.open_issues}}</td>
+	<td>{{@repository.branch_count}}</td>
+	<td>
+    <button class="showmore" {{on  "click" (perform this.showDetail)}}>
+      Show Branches
+    </button>
+  </td>
 </tr>
+
 {{#if this.showDetailVisible}}
-<tr class="detail">
+  <tr class="detail">
     <td colspan="6">
       <div>
         <table class="table">
-          	{{#each this.branches as |branch|}}
-          		<div class="branch-name">{{branch.name}}</div>
-          	{{/each}}
+            {{#each this.branches as |branch|}}
+              <div class="branch-name">{{branch.name}}</div>
+            {{/each}}
         </table>
       </div>
     </td>

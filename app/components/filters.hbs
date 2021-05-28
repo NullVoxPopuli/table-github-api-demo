@@ -1,0 +1,18 @@
+<div class="filters">
+  <label>
+    Is Private
+    <Input @type="checkbox" @checked={{this.isPrivate}} {{on "input" this.isPrivateCheck}} />
+  </label>
+
+
+  <label>
+    Language
+    <select class="language-dropdown" {{on "change" this.languageFilterCheck }}>
+      {{#each this.languages as |language|}}
+        <option value={{language}}>{{language}}</option>
+      {{/each}}
+    </select>
+  </label>
+</div>
+
+{{yield this.filteredRepositories}}
