@@ -1,0 +1,22 @@
+<tr>
+	<td>{{@name}}</td>
+	<td><a href={{@url}}>{{@url}}</a></td>
+	<td>{{@language}}</td>
+	<td>{{@isPrivate}}</td>
+	<td>{{@openIssues}}</td>
+	<td>{{@branchCount}}</td>
+	<td><a class="showmore" onclick={{action "showDetail" @name @organizationName @token}}>Show Branches</a></td>
+</tr>
+{{#if this.showDetailVisible}}
+<tr class="detail">
+    <td colspan="6">
+      <div>
+        <table class="table">
+          	{{#each this.branches as |branch|}}
+          		<div class="branch-name">{{branch.name}}</div>
+          	{{/each}}
+        </table>
+      </div>
+    </td>
+  </tr>
+{{/if}}
