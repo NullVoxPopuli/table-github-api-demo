@@ -1,7 +1,9 @@
 # table-github-api-demo
 
-This README outlines the details of collaborating on this Ember application.
-A short introduction of this app could easily go here.
+
+Original Code: https://ember-twiddle.com/b1e5c105a78ad814e2204119bdeeead4?openFiles=twiddle%5C.json%2C
+
+This repo can't be on twiddle, because at the time of writing, twiddle does not support the cached decorator polyfill.
 
 ## Prerequisites
 
